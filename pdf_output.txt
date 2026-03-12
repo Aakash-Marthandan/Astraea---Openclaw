@@ -1,0 +1,302 @@
+
+--- Astraea Engine.pdf ---
+Astraea: A State-Aware Scheduling Engine for LLM-Powered
+Agents
+Hongqiu Ni
+University of Science and
+Technology of China
+ChinaJiabao Zhang
+University of Science and
+Technology of China
+ChinaGuopeng Li
+University of Science and
+Technology of China
+China
+Zilong Wang
+University of Science and
+Technology of China
+ChinaRuiqi Wu
+University of Science and
+Technology of China
+ChinaChi Zhang∗
+Hefei University of Technology
+China
+Haisheng Tan†
+University of Science and
+Technology of China
+China
+Abstract
+Large Language Models (LLMs) are increasingly being deployed
+asintelligentagents.Theirmulti-stageworkflows,whichalternate
+between local computation and calls to external network services
+likeWebAPIs,introduceamismatchintheirexecutionpatternand
+the scheduling granularity of existing inference systems such as
+vLLM. Existing systems typically focus on per-segment optimiza-
+tionwhichpreventsthemfromminimizingtheend-to-endlatency
+of the complete agentic workflow, i.e., the global Job Completion
+Time (JCT) over the entire request lifecycle. To address this lim-
+itation, we propose Astraea , a service engine designed to shift
+the optimization from local segments to the global request lifecy-
+cle.Astraea employs a state-aware, hierarchical scheduling algo-
+rithmthatintegratesarequest’shistoricalstatewithfuturepredic-
+tions. It dynamically classifies requests by their I/O and compute-
+intensive nature and uses an enhanced HRRN policy to balance
+efficiency and fairness. Astraea also implements an adaptive KV
+cache manager that intelligently handles the agent state during
+I/O waits based on the system memory pressure. Extensive exper-
+iments show that Astraea reduces average JCT by up to 25.5%
+compared to baseline methods. Moreover, our approach demon-
+strates strong robustness and stability under high load across var-
+ious model scales.
+Keywords
+LLM Serving Systems, LLM Inference Engine, Agentic workflows,
+Latency Optimization
+1 Introduction
+The widespread deployment of Large Language Models (LLMs) as
+cloud services, accessed via Web APIs, has catalyzed a new gen-
+eration of powerful web applications. Meanwhile, LLMs are grad-
+ually evolving from language processors into intelligent agents
+(LLMAgents)capableofautonomousplanningandtaskexecution.
+∗Corresponding author.
+†Corresponding author.
+Make a travel plan to Hawaii in June.
+The weather in 
+Hawaii in June isQuery the weather
+sunny. Remember to 
+protect yourself from the 
+sun. Scenic spots includeQuery tourist attractions
+Hawaii Volcanoes 
+National Park.Prefill Decode API CallFigure 1: An example of an agentic inference workflow.
+These agents leverage external tools [ 10,24,29] by programmati-
+cally issuing a series of API calls to web services and other re-
+sources, enabling them to accomplish more complex tasks, such
+as autonomously browsing the web [ 11,46,51], solving issues on
+GitHub [ 16,39,44], and proving challenging mathematical prob-
+lems [9,19].
+Theexecutionoftheseagentictasksintroducesamulti-stagein-
+fer
+
+--- Execution Plan Phase 1.pdf ---
+System 2 Substrate Architecture
+Execution Plan for Multi-Agent Orchestration
+1 Introduction: The Epistemic Crisis and the Architectural Impera-
+tive
+TherapidproliferationofautonomousartificialintelligenceagentsgovernedbyLargeLanguage
+Models (LLMs) has revealed a critical, structural vulnerability across the entire discipline of ma-
+chine learning: an overwhelming reliance on System 1 cognition.[1] Foundational models are
+exquisitelytunedforrapid,intuitive,andpattern-basedsequenceprediction,optimizingforthe
+most probable linguistic continuation rather than engaging in deliberate, logical, and adaptive
+deduction.[1]Whendeployedwithinlong-horizon,autonomousmulti-agentenvironments,this
+architecturefrequentlysuccumbsto“SemanticMimicry”and“AxiomaticObedience”.[1]Models
+validatestructurallyplausiblebutfactuallyincorrectanalogiesduetohighvectorsimilarity,and
+they blindly accept false premises to satisfy localized user intent, resultingin contextual degra-
+dation, logical hallucinations, and mutual state corruption.[1]
+Toelevatefoundationalmodelsfromreactivelinguisticenginestoreliable,long-termdigital
+workforces capable of operating as a cohesive multi-agent swarm, the execution environment
+requiresadedicatedSystem2cognitiveoverlay.[1]Thearchitecturedelineatedinthisreportes-
+tablishesacomprehensive,highlyexhaustiveexecutionroadmapfortransformingthebaseline
+OpenClaw orchestration ecosystem into a robust, logically rigorous platform.
+This transformation is strategically structured across two distinct developmental phases.
+Phase 1 focuses on immediate stabilization, resource optimization, and contextual enhance-
+ment. For deployment after Phase 1, the architecture systematically abandons OpenClaw’s de-
+fault markdown memory structures, replacing them with the supermemory.ai framework to es-
+tablish advanced Retrieval-Augmented Generation (RAG) and stateful semantic memory.[1, 2]
+Concurrently, Phase 1 overhauls computational resource management by implementing the
+Astraeascheduling frameworkinto the vLLM backend, orchestratingcomplexcompute and In-
+put/Output (I/O) wait cycles via a Stateful Multi-Level Feedback Queue (MLFQ) and a Highest
+Response Ratio Next (HRRN) policy.[1, 1, 3]
+Phase 2 transitions the framework toward absolute epistemic agency, strategically phas-
+ing out the third-party supermemory.ai infrastructure in favor of an in-house neurosymbolic
+topology. This subsequent phase utilizes Logic Tensor Networks (LTN) to enforce strict logical
+boundaries,HolographicReducedRepresentations(HRR)forvariablebinding,andaMulti-scale
+Entanglement Renormalization Ansatz (MERA) to physically execute deductive reasoning as a
+Renormalization Group (RG) flow.[1, 1]
+2 Diagnostic Evaluation of the Baseline Substrate
+Before detailing the Phase 1 execution plan, it is critical to diagnose the operational realities
+and limitations of the underlying execution substrate. OpenClaw represents a paradigm shift
+in open-source agent orchestration, providing a persistent, loca
+
+--- HRRN.pdf ---
+Recursive Tensor Networks for Efficient Abstract Reasoning
+Summary, Motivation & Architecture
+Project Proposal
+December 2025
+1 / 37
+Motivation: The “Less is More” Paradigm
+Context:Tiny Recursive Models (TRM) show that parameter efficiency>depth for logic.
+What TRM Changed
+Parameter Sharing:Reusing weights
+forces learningUniversal Rulesvs.
+memorizing positions.
+Data Efficiency:O(1) parameters
+prevents overfitting on small data.My Unique Contributions
+Geometric Bias:Applying recursion to
+a2D Lattice (PEPS)to respect grid
+topology.
+Enforcing Area Law:Unlike
+Transformers (Volume Law), We strictly
+constrain information flow to the
+boundary, forcing the model to learn
+causal objects.
+Modulated Logic:Introducing
+Scale-Dependent Weightsto evolve
+logic from pixels to objects.
+2 / 37
+Functional Architecture: Engine vs. Steering
+PEPS Grid MERA Core
+ModulatorState
+θ(s)
+Mandatory (The Engine)
+PEPS Grid:Enforces Area Law
+(Locality).
+MERA Unit:Recursive compression.Adaptive (The Steering)
+Modulator:Adapts logic per scale.
+TTT:Updates weights at inference.
+3 / 37
+What is “Reasoning”?
+We define reasoning physically asRenormalization Group (RG) Flow.
+The Disentangler (Sorting):
+Action:Rotates basis to separateSignal(Shape) fromNoise(Texture).
+Why Critical:Prevents mixing irrelevant details during pooling.
+The Isometry (Abstraction):
+Action:Maps a group of pixels to a singleConcept Token.
+Why Critical:Reduces dimensionality while preserving topology.
+4 / 37
+Core Questions: Thef-function
+Investigating the transition functionh t+1=f(h t, θ).
+1IsfScale-Invariant?
+Hypothesis:No. Logic must shift from Edge Detection (UV) to Object Movement (IR).→
+Requires Modulation.
+2IsfLocal?
+Hypothesis:Yes. ARC objects obey the Area Law. Global attention is wasteful.→Requires
+PEPS.
+3IsfReversible?
+Hypothesis:Yes. Reasoning should be generative.→Requires Unitary Tensors.
+5 / 37
+Broader AI Contributions
+Abstraction as Renormalization:
+Formalizing concept formation as the flow from UV (pixels) to IR (rules).
+Causation vs. Correlation:
+Replacing All-to-All Attention (Volume Law) with Nearest-Neighbor Constraints (Area
+Law).
+Glass-Box Interpretability:
+Latent states are always valid 2D grids, allowing direct visualization of the ”thought
+process.”
+6 / 37
+System Blueprint
+Input Grid
+(Structured Data)Recursive Core
+Compress
+(Abstraction)
+Sort
+(Feature Filter)Final Rule
+(Learned Concept) Stateh tht+1
+Context Adapter
+(Attention)Adjust
+Logic
+Complexity
+Check Search UpdateRecursion (Zoom Out)
+Self-Verification (Reconstruction)
+7 / 37
+The Challenge: Representation vs. Reality
+The Context:The ARC benchmark requires reasoning about 2D grids, objects, and local
+interactions.
+The Mismatch:
+Standard Deep Learning (Vector Space):Flattens data into 1D vectors.
+Consequence:This destroys spatial locality. A pixel at (0,0) and (0,1) might be far
+apart in the flattened vector.
+The Goal:We need a data structure that:
+1Preserves the2D Geometryof the input naturally.
+2Handles the exponential size of the state
+
+--- HRRN_Overview.pdf ---
+Recursive Tensor Networks for Efficient Geometric Reasoning
+A Renormalization Group Approach to ARC-AGI
+Project Proposal Overview
+January 2026
+Project Proposal Overview Recursive Tensor Networks for Efficient Geometric Reasoning January 2026 1 / 17
+Research Hypothesis: Reasoning as Renormalization
+The Core Question:Why do massive LLMs fail at simple geometric puzzles (ARC-AGI)?
+Hypothesis:Abstract reasoning on grids is isomorphic to aRenormalization Group (RG) Flow.
+•The Mapping (Why RG?):
+•Micro-scale (UV):Raw pixels (High-Dimensional, Noisy).
+•Macro-scale (IR):Abstract concepts (Low-Dimensional, Invariant).
+•Flow:”Reasoning” is the systematic filtering of local texture to preserve global topology, and
+updating this filter over time based on reward functions.
+•Why it works:Unlike pooling (which destroys data), RG uses unitarydisentanglersto sort noise
+from signal. This allows us to reduce dimensionality without breaking the logical ”thread” of the
+puzzle.
+Project Proposal Overview Recursive Tensor Networks for Efficient Geometric Reasoning January 2026 2 / 17
+Intellectual Novelty & Contribution
+The Knowledge Gap:Current AI targets ”Reasoning” usingVolume Lawarchitectures
+(Transformers). These scaleO(N2), failing to capture theGeometric Localityessential for
+physical/spatial tasks.
+Target Sub-Area:Geometric Reasoning on Grid Worlds (ARC-AGI).
+Our Specific Contributions:
+1Structural Bias (Area Law):Replacing all-to-all attention with a 2D Grid Tensor Network.
+Constrains search to physically plausible, local interactions.
+2Spatial Recursion:We extend ”Tiny Recursive Models” (TRM). Instead of iterating to ”think
+longer” (depth), our model iterates to ”think broader” (scale), incorporating spatial abstraction.
+3Optional Inference-Time Evolution:Redefining Test-Time Training (TTT) as adapting the
+model’s internal ”physics” (modulator weights) to the specific test puzzle.
+Project Proposal Overview Recursive Tensor Networks for Efficient Geometric Reasoning January 2026 3 / 17
+System Blueprint & Evaluation Plan
+The Algorithm:
+1Input:Embed grid into a 2D Tensor Lattice (PEPS-like).
+2Refine (The Engine):Apply recursiveDisentanglers(sort noise) andIsometries(compress
+scale). Iterationtgenerates Scalet+ 1.
+3Adapt (TTT):At test time, freeze the core and optimizemodulationweights on the support
+examples (Few-Shot).
+4Verify:Run network inreverse(Generative mode) to validate.
+Evaluation Plan:
+•Benchmark:ARC-AGI-1 and ARC-AGI-2 (Easy & Hard subsets).
+•Key Metrics:Generalization per parameter (Target: High accuracy with<10M params).
+•Baselines:TRM (Temporal Recursion), ViT (Volume Law), ResNet.
+Project Proposal Overview Recursive Tensor Networks for Efficient Geometric Reasoning January 2026 4 / 17
+The Inductive Bias Problem: Volume vs. Area Law
+Volume Law (Transformers)
+•Complexity scales with Volume (N).
+•”Everything connects to everything.”
+•Issue:Must learn locality from scratch. Needs
+massive data. Prone to spurious correlations
+(teleportation).Area Law (Ten
+
+--- System 2 Cognitive Architecture.pdf ---
+System 2 Cognitive Architecture for Multi-Agent
+Orchestration
+A Neurosymbolic Tensor Network Approach
+1 Introduction: The Epistemic Crisis in Autonomous Agent Frame-
+works
+The rapid proliferation of autonomous artificial intelligence agents driven by Large Language
+Models (LLMs) has exposed a fundamental architectural limitation in contemporary machine
+learning: theoverwhelmingrelianceonSystem1cognition. FoundationmodelssuchasClaude,
+Gemini, and the GPT series are exquisitely tuned for rapid, intuitive, and pattern-based gener-
+ation, excelling at sequence prediction and localized context synthesis.[1, 2] However, when
+deployed in long-horizon, autonomous multi-agent environments, these models operate pri-
+marily as sophisticated stochastic mimicry engines.[3, 4] They optimize for the most probable
+linguistic continuation rather than engaging in the deliberate, logical, and adaptive thought
+processes characteristic of System 2 reasoning.[1, 4]
+This structural reliance on probabilistic association results in profound failure modes when
+agents are tasked with managing extended, multi-step workflows. Current agent frameworks
+frequently succumb to “Semantic Mimicry,” wherein the model validates structurally plausi-
+ble but factually incorrect analogies due to high vector similarity, and “Axiomatic Obedience,”
+whereinalignmenttuningcompelsthemodeltoblindlyacceptfalsepremisestosatisfylocalized
+user intent.[4] The core deficit is a lack of “Epistemic Agency”—the architectural autonomy to
+dissentagainststructurallyvalidbutfactuallybaselessarguments,andthecapacitytomaintain
+rigorouslogicalconsistencyoverthousandsofexecutionstepswithoutsuccumbingtosemantic
+drift or hallucination.[4]
+Toelevatefoundationmodelsfromreactivechatbotstoreliable,long-termdigitalworkforces
+capable of operating as a cohesive team of employees, the execution environment requires a
+dedicated System 2 cognitive overlay. This report details the design and theoretical underpin-
+nings of a comprehensive System 2 architecture tailored for multi-agent platforms, specifically
+usingtheOpenClawframeworkasthefoundationalexecutionsubstrate.[5,6]Byoperatingasa
+secondarycognitionlayerontopoffoundationalLLMs,thisarchitectureintercepts,parses,and
+regulates the stochastic outputs of the underlying models, shifting the operational paradigm
+from probabilistic association to geometric and logical deduction.[4]
+The proposed architecture draws structural inspiration from the Quantum-Holographic Re-
+cursiveNetwork(QHRR)andtheMulti-scaleEntanglementRenormalizationAnsatz(MERA),paradigms
+originallydevelopedtosolvehighlyspatialandphysicalreasoningtaskssuchastheAbstraction
+and Reasoning Corpus (ARC-AGI).[7, 7] However, recognizing that general multi-agent work-
+flowsarenotconstrainedbythetwo-dimensionalspatialphysicsofanARCgrid,theframework
+adapts these tensor network principles to organize neurosymbolic patterns.[7, 8] The spatial
+physicslatticeissystematicallyreplacedbyasemantictopologygovernedbyLogicTensorNe
